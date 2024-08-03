@@ -50,15 +50,27 @@ class MainWindow(QMainWindow):
     def adicionar_estudo(self):
         dialog = QDialog(self)
         dialog.setWindowTitle('Adicionar Estudo de Caso')
-        dialog.setGeometry(150, 150, 300, 100)
+        dialog.setGeometry(150, 150, 400, 200)
 
         dialog_layout = QVBoxLayout()
 
-        label = QLabel('Título:')
-        dialog_layout.addWidget(label)
-
+        # Campo para título
+        label_titulo = QLabel('Título:')
+        dialog_layout.addWidget(label_titulo)
         self.input_titulo = QLineEdit()
         dialog_layout.addWidget(self.input_titulo)
+
+        # Campo para o primeiro passo
+        label_passo = QLabel('Primeiro Passo:')
+        dialog_layout.addWidget(label_passo)
+        self.input_passo = QTextEdit()
+        dialog_layout.addWidget(self.input_passo)
+
+        # Campo para problema (opcional)
+        label_problema = QLabel('Problema (opcional):')
+        dialog_layout.addWidget(label_problema)
+        self.input_problema = QTextEdit()
+        dialog_layout.addWidget(self.input_problema)
 
         btn_salvar = QPushButton('Salvar')
         dialog_layout.addWidget(btn_salvar)
@@ -70,8 +82,15 @@ class MainWindow(QMainWindow):
 
     def salvar_estudo(self):
         titulo = self.input_titulo.text()
+        passo = self.input_passo.toPlainText()
+        problema = self.input_problema.toPlainText()
+
         if titulo:
             adicionar_estudo(titulo)
+            estudos = listar_estudos()
+            estudo_id = estudos[-1]['id']  # Assume que o estudo recém-adicionado é o último na lista
+            if passo:
+                adicionar_passo(estudo_id, passo, problema)
             self.carregar_estudos()
             self.sender().parent().close()
 
