@@ -1,9 +1,13 @@
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton, 
-                             QVBoxLayout, QWidget, QListWidget, 
-                             QLineEdit, QLabel, QDialog, QHBoxLayout, QTextEdit, QMessageBox)
+                             QVBoxLayout, QWidget, QListWidget, QListWidgetItem,
+                             QLineEdit, QLabel, QDialog, QTextEdit, QMessageBox, QHBoxLayout)
+from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtCore import Qt
 import sys
-from database.db_operations import adicionar_estudo, adicionar_passo, listar_estudos, listar_passos, obter_estudo_id_por_titulo, excluir_passo, excluir_todos_passos, excluir_estudo, estudo_existe
+from database.db_operations import (adicionar_estudo, adicionar_passo, listar_estudos, 
+                                    listar_passos, obter_estudo_id_por_titulo, 
+                                    excluir_passo, excluir_todos_passos, excluir_estudo, 
+                                    estudo_existe)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -14,14 +18,21 @@ class MainWindow(QMainWindow):
         # Layout principal
         layout = QVBoxLayout()
 
-        # Campo de busca
+        # Campo de busca e botões de ação
+        search_layout = QHBoxLayout()
         self.input_busca = QLineEdit()
         self.input_busca.setPlaceholderText("Buscar estudo de caso...")
-        layout.addWidget(self.input_busca)
+        search_layout.addWidget(self.input_busca)
 
         btn_buscar = QPushButton('Buscar')
-        layout.addWidget(btn_buscar)
+        search_layout.addWidget(btn_buscar)
         btn_buscar.clicked.connect(self.buscar_estudo)
+
+        btn_limpar = QPushButton('Limpar')
+        search_layout.addWidget(btn_limpar)
+        btn_limpar.clicked.connect(self.limpar_busca)
+
+        layout.addLayout(search_layout)
 
         # Lista de estudos de caso
         self.lista_estudos = QListWidget()
@@ -57,6 +68,10 @@ class MainWindow(QMainWindow):
     def buscar_estudo(self):
         termo_busca = self.input_busca.text()
         self.carregar_estudos(filtro=termo_busca)
+
+    def limpar_busca(self):
+        self.input_busca.clear()
+        self.carregar_estudos()
 
     def abrir_passos(self):
         item = self.lista_estudos.currentItem()
@@ -174,7 +189,27 @@ class PassosWindow(QMainWindow):
         self.lista_passos.clear()
         passos = listar_passos(self.titulo_estudo)
         for i, passo in enumerate(passos):
-            self.lista_passos.addItem(f"Passo {i+1}: {passo['passo']}\nProblema: {passo['problema']}")
+            # Formatar "Passo X:" com cor diferente
+            texto_passo = f"Passo {i+1}:"
+            item_passo = QListWidgetItem(texto_passo)
+            item_passo.setFont(QFont('Arial', 10, QFont.Bold))
+            item_passo.setForeground(QColor(Qt.blue))
+            self.lista_passos.addItem(item_passo)
+
+            # Adicionar o conteúdo do passo com cor padrão
+            conteudo_passo = f" {passo['passo']}"
+            item_conteudo = QListWidgetItem(conteudo_passo)
+            self.lista_passos.addItem(item_conteudo)
+
+            # Formatar o problema, se existir
+            if passo['problema']:
+                texto_problema = f"Problema: {passo['problema']}"
+                item_problema = QListWidgetItem(texto_problema)
+                item_problema.setForeground(QColor(Qt.red))
+                self.lista_passos.addItem(item_problema)
+
+            # Adicionar uma linha em branco para separar os passos
+            self.lista_passos.addItem(QListWidgetItem(''))
 
     def adicionar_passo(self):
         passo_texto = self.input_passo.toPlainText()
@@ -191,7 +226,7 @@ class PassosWindow(QMainWindow):
         if item_selecionado >= 0:
             estudo_id = obter_estudo_id_por_titulo(self.titulo_estudo)
             passos = listar_passos(self.titulo_estudo)
-            passo_id = passos[item_selecionado]['id']
+            passo_id = passos[item_selecionado // 4]['id']  # Ajustado para múltiplos de 4 devido à formatação
             resposta = QMessageBox.question(self, 'Confirmação', 'Tem certeza que deseja excluir o passo selecionado?', QMessageBox.Yes | QMessageBox.No)
             if resposta == QMessageBox.Yes:
                 excluir_passo(passo_id)
