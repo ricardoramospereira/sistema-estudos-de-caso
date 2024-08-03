@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton,
                              QLineEdit, QLabel, QDialog, QHBoxLayout, QTextEdit, QMessageBox)
 from PyQt5.QtCore import Qt
 import sys
-from database.db_operations import adicionar_estudo, adicionar_passo, listar_estudos, listar_passos, obter_estudo_id_por_titulo, excluir_passo, excluir_todos_passos, excluir_estudo
+from database.db_operations import adicionar_estudo, adicionar_passo, listar_estudos, listar_passos, obter_estudo_id_por_titulo, excluir_passo, excluir_todos_passos, excluir_estudo, estudo_existe
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -13,6 +13,15 @@ class MainWindow(QMainWindow):
 
         # Layout principal
         layout = QVBoxLayout()
+
+        # Campo de busca
+        self.input_busca = QLineEdit()
+        self.input_busca.setPlaceholderText("Buscar estudo de caso...")
+        layout.addWidget(self.input_busca)
+
+        btn_buscar = QPushButton('Buscar')
+        layout.addWidget(btn_buscar)
+        btn_buscar.clicked.connect(self.buscar_estudo)
 
         # Lista de estudos de caso
         self.lista_estudos = QListWidget()
@@ -37,11 +46,17 @@ class MainWindow(QMainWindow):
         container.setLayout(layout)
         self.setCentralWidget(container)
 
-    def carregar_estudos(self):
+    def carregar_estudos(self, filtro=None):
         self.lista_estudos.clear()
         estudos = listar_estudos()
+        if filtro:
+            estudos = [estudo for estudo in estudos if filtro.lower() in estudo['titulo'].lower()]
         for estudo in estudos:
             self.lista_estudos.addItem(estudo['titulo'])
+
+    def buscar_estudo(self):
+        termo_busca = self.input_busca.text()
+        self.carregar_estudos(filtro=termo_busca)
 
     def abrir_passos(self):
         item = self.lista_estudos.currentItem()
@@ -89,12 +104,15 @@ class MainWindow(QMainWindow):
         problema = self.input_problema.toPlainText()
 
         if titulo:
-            adicionar_estudo(titulo)
-            estudo_id = obter_estudo_id_por_titulo(titulo)
-            if passo:
-                adicionar_passo(estudo_id, passo, problema)
-            self.carregar_estudos()
-            self.sender().parent().close()
+            if estudo_existe(titulo):
+                QMessageBox.warning(self, 'Erro', 'Um estudo com este nome já existe. Escolha um nome diferente.')
+            else:
+                adicionar_estudo(titulo)
+                estudo_id = obter_estudo_id_por_titulo(titulo)
+                if passo:
+                    adicionar_passo(estudo_id, passo, problema)
+                self.carregar_estudos()
+                self.sender().parent().close()
 
     def excluir_estudo_selecionado(self):
         item = self.lista_estudos.currentItem()

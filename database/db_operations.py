@@ -65,3 +65,11 @@ def excluir_estudo(estudo_id):
     cursor.execute('DELETE FROM estudos WHERE id = ?', (estudo_id,))
     conn.commit()
     conn.close()
+
+def estudo_existe(titulo):
+    conn = sqlite3.connect('estudos.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT COUNT(*) FROM estudos WHERE LOWER(titulo) = LOWER(?)', (titulo,))
+    existe = cursor.fetchone()[0] > 0
+    conn.close()
+    return existe
