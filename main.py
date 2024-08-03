@@ -1,9 +1,11 @@
 from database.db_setup import init_db
-import tkinter as tk
-from interface import EstudoApp
+from interface import MainWindow
+from PyQt5.QtWidgets import QApplication
+import sys
 
 if __name__ == "__main__":
     init_db()
-    root = tk.Tk()
-    app = EstudoApp(root)
-    root.mainloop()
+    app = QApplication(sys.argv)
+    main_window = MainWindow()
+    main_window.show()
+    sys.exit(app.exec_())
