@@ -21,22 +21,23 @@ O **Sistema de Gestão de Estudos de Caso** é uma aplicação desktop desenvolv
 ### 1. Clonar o Repositório
 ```bash
 git clone https://github.com/seu-usuario/sistema-estudos-de-caso.git
+```
 cd sistema-estudos-de-caso
 
-2. Instalar Dependências
-
+## 2. Instalar Dependências
+```bash
 pip install -r requirements.txt
-
-3. Configurar Banco de Dados
+```
+## 3. Configurar Banco de Dados
 
 Verifique se o arquivo db_setup.py está configurado para inicializar o banco de dados corretamente. Execute-o para criar as tabelas necessárias.
 
-4. Executar a Aplicação
-
+## 4. Executar a Aplicação
+```bash
 python main.py
-
-Estrutura do Projeto
-
+```
+## Estrutura do Projeto
+```
 sistema-estudos-de-caso/
 │
 ├── database/
@@ -47,61 +48,63 @@ sistema-estudos-de-caso/
 ├── main.py
 ├── requirements.txt
 └── README.md
+```
+-**database/:** Diretório que contém os scripts relacionados ao banco de dados SQLite.
+-**interface.py:** Contém a lógica da interface gráfica utilizando PyQt5.
+-**main.py:** Script principal para iniciar a aplicação.
+-**requirements.txt:** Arquivo que lista todas as dependências necessárias para o projeto.
+-**README.md:** Documentação e instruções do projeto.
 
--database/: Diretório que contém os scripts relacionados ao banco de dados SQLite.
--interface.py: Contém a lógica da interface gráfica utilizando PyQt5.
--main.py: Script principal para iniciar a aplicação.
--requirements.txt: Arquivo que lista todas as dependências necessárias para o projeto.
--README.md: Documentação e instruções do projeto.
+## Criaçao de Executável
 
-Criaçao de Executável
+## Para Windows:
 
-Para Windows:
-
-1. Instalar PyInstaller:
-
+### 1. Instalar PyInstaller:
+```bash
 pip install pyinstaller
-
-2. Criar o Executável:
-
+```
+### 2. Criar o Executável:
+```bash
 pyinstaller --onefile --windowed main.py
+```
 
+### Personalização do Ícone
+#### Para personalizar o ícone da aplicação, use o parâmetro --icon ao criar o executável com o PyInstaller:
 
-Personalização do Ícone
-Para personalizar o ícone da aplicação, use o parâmetro --icon ao criar o executável com o PyInstaller:
+#### Windows: Utilize ícones no formato .ico.
 
-Windows: Utilize ícones no formato .ico.
-Linux: Utilize ícones no formato .png ou .xpm.
-
+```bash
 pyinstaller --onefile --windowed --icon=icone.ico main.py
-
+```
 (O executável será gerado na pasta dist/.)
 
-Para Linux:
+## Para Linux:
 
-1. Instalar PyInstaller:
-
+### 1. Instalar PyInstaller:
+```bash
 pip install pyinstaller
-
-2. Criar o Executável:
-
-
+```
+### 2. Criar o Executável:
+```bash
 pyinstaller --onefile main.py
+```
+### Personalização do Ícone
+#### Para personalizar o ícone da aplicação, use o parâmetro --icon ao criar o executável com o PyInstaller:
 
-Personalização do Ícone
-Para personalizar o ícone da aplicação, use o parâmetro --icon ao criar o executável com o PyInstaller:
+#### Linux: Utilize ícones no formato .png ou .xpm.
 
+```bash
 pyinstaller --onefile --icon=icone.png main.py
+```
+### Configurar Ícone na Interface PyQt5
 
-Configurar Ícone na Interface PyQt5
-
-Adicione a seguinte linha no seu código, antes de iniciar a aplicação:
-
+#### Adicione a seguinte linha no seu código, antes de iniciar a aplicação:
+```bash
 app.setWindowIcon(QIcon('icone.png'))  # Substitua por 'icone.ico' no Windows
+```
+## Considerações Finais
 
-Considerações Finais
-
-Este projeto foi criado para facilitar a gestão de estudos de caso, permitindo uma organização eficiente e visualmente clara das informações. O código foi modularizado para facilitar futuras expansões e manutenções.
+### Este projeto foi criado para facilitar a gestão de estudos de caso, permitindo uma organização eficiente e visualmente clara das informações. O código foi modularizado para facilitar futuras expansões e manutenções.
 
 
 
