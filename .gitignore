@@ -140,4 +140,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# End of https://mrkandreev.name/snippets/gitignore-generator/#Python
+# End of https://mrkandreev.name/snippets/gitignore-generator/#Python*.pyc
+__pycache__/
+env/
